@@ -1,5 +1,6 @@
 import asyncio
 import socket
+
 import dns.resolver
 import mcstatus
 
@@ -19,7 +20,7 @@ async def scan_port(ip, port, sem):
                 server_name = " ".join(part['text'] for part in status.motd.raw['extra']).strip().replace(" ", "")
                 print(ip + ":" + str(port))
                 print(
-                    f"这个服务器有 {status.players.online} 玩家在线，延时为 {status.latency} ms，服务器名称为:{server_name}，服务器版本为{status.version.name}")
+                    f"这个服务器有 {status.players.online} 玩家在线，延时为 {int(status.latency)} ms，服务器名称为:{server_name}，服务器版本为{status.version.name}")
                 break
             except Exception as e:
                 pass
@@ -44,10 +45,9 @@ async def get_ip(host_or_ip):
     await scan_ip(host_or_ip)
 
 
-async def main(host):
+async def main_async(host):
     await asyncio.create_task(get_ip(host))
 
-# asyncio.run(main())
 
-
-
+def main(host):
+    asyncio.run(main_async(host))
